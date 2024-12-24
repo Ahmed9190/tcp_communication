@@ -20,7 +20,11 @@ FROM debian:bullseye-slim
 WORKDIR /usr/src/app
 
 # Install necessary runtime dependencies
-RUN apt-get update && apt-get install -y libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update
+RUN apt-get install -y libpq-dev
+RUN apt-get install -y libfontconfig1
+RUN apt-get install -y libssl-dev ca-certificates 
+RUN rm -rf /var/lib/apt/lists/*
 
 # Copy the compiled binary from the builder stage
 COPY --from=builder /usr/src/app/target/release/tcp_communication .
