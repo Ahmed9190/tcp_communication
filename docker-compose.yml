@@ -1,7 +1,8 @@
 services:
   tcp_communication:
-    build: .
-    image: tcp_communication:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: tcp_communication_container
     ports:
       - "4000:4000"
