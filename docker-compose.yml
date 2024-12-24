@@ -1,0 +1,12 @@
+services:
+  tcp_communication:
+    build: .
+    image: tcp_communication:latest
+    container_name: tcp_communication_container
+    ports:
+      - "4000:4000"
+      - "8124:8124"
+    environment:
+      RUST_LOG: "info"
+    volumes:
+      - .:/usr/src/app
