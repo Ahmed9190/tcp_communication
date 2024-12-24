@@ -11,4 +11,4 @@ COPY Cargo.toml Cargo.lock ./
 COPY src ./src
 
 # Build the application
-RUN cargo run
+CMD cargo run
