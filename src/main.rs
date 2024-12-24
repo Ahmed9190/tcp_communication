@@ -35,7 +35,7 @@ async fn main() -> std::io::Result<()> {
         .route("/lock", post(lock_handler))
         .with_state(clients);
 
-    let listen_addr = SocketAddr::from(([127, 0, 0, 1], 4000));
+    let listen_addr = SocketAddr::from(([0, 0, 0, 0], 4000));
     let listener = TcpListener::bind(listen_addr).await?;
 
     axum::serve(listener, app.into_make_service())
