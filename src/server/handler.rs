@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
-use crate::config::USER_ID;
 use crate::server::commands::R0Operation;
 use crate::server::protocol;
+use crate::{commands::parser::parse_command, config::USER_ID};
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     net::TcpStream,
@@ -25,6 +25,9 @@ pub async fn handle_connection(mut socket: TcpStream, clients: ClientMap) -> std
         let mut clients_lock = clients.lock().await;
         clients_lock.insert(imei.clone(), Arc::new(Mutex::new(socket)));
         println!("Client registered: {}", imei);
+
+        let parsed_message = parse_command(&initial_message);
+        println!("Parsed message: {:?}", parsed_message);
     } else {
         println!("Invalid initial message: {}", initial_message);
         return Ok(()); // Ignore the client if the message is invalid
