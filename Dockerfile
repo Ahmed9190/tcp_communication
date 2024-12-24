@@ -14,7 +14,7 @@ COPY src ./src
 RUN cargo build --release
 
 # Use a minimal base image for the final stage
-FROM debian:bullseye-slim
+FROM ubuntu:latest
 
 # Set the working directory
 WORKDIR /usr/src/app
