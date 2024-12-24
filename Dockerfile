@@ -14,10 +14,13 @@ COPY src ./src
 RUN cargo build --release
 
 # Use a minimal base image for the final stage
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
 # Set the working directory
 WORKDIR /usr/src/app
+
+# Install necessary runtime dependencies
+RUN apt-get update && apt-get install -y libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/*
 
 # Copy the compiled binary from the builder stage
 COPY --from=builder /usr/src/app/target/release/tcp_communication .
