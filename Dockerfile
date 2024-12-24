@@ -22,5 +22,8 @@ WORKDIR /usr/src/app
 # Copy the compiled binary from the builder stage
 COPY --from=builder /usr/src/app/target/release/tcp_communication .
 
+# Verify the binary exists
+RUN ls -la /usr/src/app/tcp_communication
+
 # Set the entrypoint to the compiled binary
 ENTRYPOINT ["./tcp_communication"]
