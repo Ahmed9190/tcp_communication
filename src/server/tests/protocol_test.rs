@@ -126,6 +126,40 @@ mod validate_l1_response_tests {
         assert!(result.is_ok());
     }
 }
+
+#[cfg(test)]
+mod validate_s7_response_tests {
+    use crate::server::protocol::validate_s7_response;
+
+    #[test]
+    fn test_validate_s7_response_valid() {
+        let imei = "123456789123456";
+        let headlight_switch = 0;
+        let mode_setting = 3;
+        let throttle_response = 0;
+        let taillights_flashing = 0;
+        let response = format!(
+            "*SCOR,{vendor},{imei},S7,{headlight_switch},{mode_setting},{throttle_response},{taillights_flashing}#\n",
+            vendor = crate::config::VENDOR,
+            imei = imei,
+            headlight_switch = headlight_switch,
+            mode_setting = mode_setting,
+            throttle_response = throttle_response,
+            taillights_flashing = taillights_flashing
+        );
+
+        let result = validate_s7_response(
+            &response,
+            imei,
+            headlight_switch,
+            mode_setting,
+            throttle_response,
+            taillights_flashing,
+        );
+
+        assert!(result.is_ok());
+    }
+}
 #[cfg(test)]
 mod validate_response_tests {
     use crate::server::protocol::validate_command;

@@ -9,6 +9,7 @@ use tokio::{
     sync::Mutex,
 };
 
+use super::command_enums::{SpeedMode, Turn};
 use super::ClientMap;
 
 pub async fn handle_connection(mut socket: TcpStream, clients: ClientMap) -> std::io::Result<()> {
@@ -122,6 +123,39 @@ pub async fn handle_l_response(
                     "Ignored invalid {} response: {} ({})",
                     command, response, err
                 );
+            }
+        }
+    }
+}
+
+pub async fn handle_s7_response(
+    socket: &mut tokio::net::TcpStream,
+    imei: &str,
+    headlight_switch: &Turn,
+    speed_mode: &SpeedMode,
+    throttle_response: &Turn,
+    taillights_flashing: &Turn,
+) -> Result<(), String> {
+    let mut buffer = vec![0; 1024];
+    loop {
+        let response = read_response(socket, &mut buffer).await?;
+
+        let validation_result = protocol::validate_s7_response(
+            &response,
+            imei,
+            headlight_switch.into(),
+            speed_mode.into(),
+            throttle_response.into(),
+            taillights_flashing.into(),
+        );
+
+        match validation_result {
+            Ok(_) => {
+                println!("Valid S7 response received: {}", response);
+                return Ok(());
+            }
+            Err(err) => {
+                println!("Ignored invalid S7 response: {} ({})", response, err);
             }
         }
     }

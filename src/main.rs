@@ -5,7 +5,13 @@ use tokio::{
     sync::Mutex,
 };
 
-use server::{lock_handler::lock_handler, start_server, unlock_handler::unlock_handler};
+use server::{
+    change_gear_handler::{self, change_gear_handler},
+    lock_handler::lock_handler,
+    start_server,
+    toggle_headlight_handler::toggle_headlight_handler,
+    unlock_handler::unlock_handler,
+};
 
 pub mod commands;
 pub mod config;
@@ -33,10 +39,13 @@ async fn main() -> std::io::Result<()> {
     let app = Router::new()
         .route("/unlock", post(unlock_handler))
         .route("/lock", post(lock_handler))
+        .route("/change-gear", post(change_gear_handler))
+        .route("/toggle-headlight", post(toggle_headlight_handler))
         .with_state(clients);
 
     let listen_addr = SocketAddr::from(([0, 0, 0, 0], 4000));
     let listener = TcpListener::bind(listen_addr).await?;
+    println!("Http server listening on {}", listen_addr);
 
     axum::serve(listener, app.into_make_service())
         .await

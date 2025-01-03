@@ -2,7 +2,10 @@ use serde::Deserialize;
 use std::convert::TryFrom;
 use tokio::io::AsyncWriteExt;
 
-use super::ClientMap;
+use super::{
+    command_enums::{SpeedMode, Turn},
+    ClientMap,
+};
 
 #[derive(Debug, Deserialize)]
 pub enum R0Operation {
@@ -94,6 +97,25 @@ pub fn generate_l1_command(imei: &str, key: &str) -> String {
 
 pub fn generate_l1_ack(imei: &str) -> String {
     generate_command(imei, "L1", &[])
+}
+
+pub fn generate_s7_command(
+    imei: &str,
+    headlight: &Turn,
+    speed_mode: &SpeedMode,
+    throttle: &Turn,
+    taillights_flashing: &Turn,
+) -> String {
+    generate_command(
+        imei,
+        "S7",
+        &[
+            &Into::<u8>::into(headlight).to_string(),
+            &Into::<u8>::into(speed_mode).to_string(),
+            &Into::<u8>::into(throttle).to_string(),
+            &Into::<u8>::into(taillights_flashing).to_string(),
+        ],
+    )
 }
 
 pub fn generate_command(imei: &str, command: &str, content: &[&str]) -> String {

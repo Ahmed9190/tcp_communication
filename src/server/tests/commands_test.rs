@@ -87,6 +87,36 @@ mod generate_final_ack_tests {
 }
 
 #[cfg(test)]
+mod generate_s7_command_tests {
+    use crate::server::command_enums::{SpeedMode, Turn};
+    use crate::server::commands;
+
+    #[test]
+    fn test_generate_s7_command() {
+        let imei = "123456789123456";
+        let headlight = Turn::On;
+        let speed_mode = SpeedMode::Medium;
+        let throttle = Turn::Off;
+        let taillights_flashing = Turn::DontSet;
+
+        let result = commands::generate_s7_command(
+            imei,
+            &headlight,
+            &speed_mode,
+            &throttle,
+            &taillights_flashing,
+        );
+
+        assert_eq!(
+            result,
+            format!(
+                "0xFFFF*SCOS,{vendor},123456789123456,S7,2,2,1,0#\n",
+                vendor = crate::config::VENDOR
+            )
+        );
+    }
+}
+#[cfg(test)]
 mod generate_command_tests {
     use crate::server::commands;
 
