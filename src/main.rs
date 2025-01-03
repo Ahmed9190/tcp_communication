@@ -6,11 +6,8 @@ use tokio::{
 };
 
 use server::{
-    change_gear_handler::{self, change_gear_handler},
-    lock_handler::lock_handler,
-    start_server,
-    toggle_headlight_handler::toggle_headlight_handler,
-    unlock_handler::unlock_handler,
+    change_gear_handler::change_gear_handler, lock_handler::lock_handler, start_server,
+    toggle_headlight_handler::toggle_headlight_handler, unlock_handler::unlock_handler,
 };
 
 pub mod commands;
