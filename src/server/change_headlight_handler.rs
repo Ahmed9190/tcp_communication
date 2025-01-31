@@ -12,21 +12,21 @@ use axum::{
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
-pub struct ToggleHeadlightRequest {
+pub struct ChangeHeadlightRequest {
     pub imei: String,
     pub state: bool, // `true` for on, `false` for off
 }
 
 #[derive(Serialize)]
-pub struct ToggleHeadlightResponse {
+pub struct ChangeHeadlightResponse {
     pub success: bool,
     pub message: String,
     pub imei: String,
 }
 
-pub async fn toggle_headlight_handler(
+pub async fn change_headlight_handler(
     State(clients): State<ClientMap>,
-    Json(payload): Json<ToggleHeadlightRequest>,
+    Json(payload): Json<ChangeHeadlightRequest>,
 ) -> impl IntoResponse {
     let imei = payload.imei.clone();
 
@@ -36,7 +36,7 @@ pub async fn toggle_headlight_handler(
         Err(err) => {
             return (
                 StatusCode::NOT_FOUND,
-                Json(ToggleHeadlightResponse {
+                Json(ChangeHeadlightResponse {
                     success: false,
                     message: err,
                     imei,
@@ -66,7 +66,7 @@ pub async fn toggle_headlight_handler(
     if let Err(err) = send_command(&mut socket, &s7_command).await {
         return (
             StatusCode::INTERNAL_SERVER_ERROR,
-            Json(ToggleHeadlightResponse {
+            Json(ChangeHeadlightResponse {
                 success: false,
                 message: err,
                 imei,
@@ -87,7 +87,7 @@ pub async fn toggle_headlight_handler(
     {
         return (
             StatusCode::INTERNAL_SERVER_ERROR,
-            Json(ToggleHeadlightResponse {
+            Json(ChangeHeadlightResponse {
                 success: false,
                 message: err,
                 imei,
@@ -98,9 +98,13 @@ pub async fn toggle_headlight_handler(
     // Return a successful response
     (
         StatusCode::OK,
-        Json(ToggleHeadlightResponse {
+        Json(ChangeHeadlightResponse {
             success: true,
-            message: "Headlight toggled successfully".to_string(),
+            message: format!(
+                "Headlight turned {} for scooter with IMEI {}",
+                if payload.state { "on" } else { "off" },
+                imei
+            ),
             imei,
         }),
     )

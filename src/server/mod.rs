@@ -6,6 +6,7 @@ use tokio::net::TcpStream;
 use tokio::sync::Mutex;
 
 pub mod change_gear_handler;
+pub mod change_headlight_handler;
 pub mod command_enums;
 pub mod commands;
 pub mod handler;
@@ -13,7 +14,6 @@ pub mod lock_handler;
 pub mod protocol;
 pub mod scooter_command;
 pub mod tests;
-pub mod toggle_headlight_handler;
 pub mod unlock_handler;
 
 pub type ClientMap = Arc<Mutex<HashMap<String, Arc<Mutex<TcpStream>>>>>;
